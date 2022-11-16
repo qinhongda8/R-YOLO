@@ -252,12 +252,7 @@ def weights_init(m):
         nn.init.constant_(m.bias.data, 0)
 
 def resize_image(image, scale_coefficient):
-    """
-    等比例缩放图片，
-    :param image:
-    :param scale_coefficient: 缩放系数，例如缩放到一半，则scale_coefficient=0.5
-    :return:
-    """
+
     # calculate the 50 percent of original dimensions
     width = int(image.shape[1] * scale_coefficient)
     height = int(image.shape[0] * scale_coefficient)
@@ -270,13 +265,6 @@ def resize_image(image, scale_coefficient):
     return output
 
 def loss_generator(generator_results, back_ground_truth):
-    """
-
-    :param generator_results: 生成网络中返回的结果，包括Attention中每一步的M，attention_map,frame1, frame2, 和最终的输出x
-    :param back_ground_truth: 干净的背景图片
-    :param binary_mask: 原始图片-干净的背景图片，然后取绝对值，再遍历每个元素，大于36的为1，否则为0
-    :return:
-    """
 
     mseloss = nn.MSELoss()
     # 计算公式4
@@ -317,9 +305,6 @@ def get_args():
     return args
 
 
-
-
-
 def train():
     index = 0
     input_list = sorted(os.listdir(args.input_dir))
@@ -330,7 +315,7 @@ def train():
     for _e in range(previous_epoch + 1, epoch):
         print("======finish  ", _e ,' / ', epoch, "==========")
 
-        for _i in range(len(input_list)):  # 默认一个iteration只有一张图片
+        for _i in range(len(input_list)):  
                 img = cv2.imread(args.input_dir + input_list[_i])
                 gt = cv2.imread(args.gt_dir + gt_list[_i])
                 dsize = (416, 416)
@@ -370,7 +355,6 @@ if __name__ == '__main__':
 
     
     std=(0.225,0.224, 0.229)
-    # model_weights = './models/vgg16-397923af.pth'
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     generator = Generator().to(device)
     vgg16 = Vgg(vgg_init(device, model_weights))

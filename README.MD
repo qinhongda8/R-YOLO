@@ -2,7 +2,7 @@
 
 Here, we provide detailed instructions to help replay our experiments. To make it easy to reproduce our research results.
 
-We give an overview of the environment installation and adaptation experiment.
+This project is the complete code of R-YOLOv5, other YOLO series  We give an overview of the environment installation and adaptation experiment.
 
 ## Environment installation
 
@@ -19,7 +19,7 @@ pip install -r requirements.txt
 
 1. Dataset download
 
-* **Cityscape and FoggyCityscape:**  Download Cityscapes dataset and Foggy-Cityscapes [here](https://www.cityscapes-dataset.com/), see dataset preparation code in [DA-Faster RCNN](https://github.com/yuhuayc/da-faster-rcnn/tree/master/prepare_data), than tranfer format from VOC to YOLO.
+* **Cityscape and FoggyCityscape:**  Download Cityscapes dataset and Foggy-Cityscapes [here](https://www.cityscapes-dataset.com/), see dataset preparation code in [DA-Faster RCNN](https://github.com/yuhuayc/da-faster-rcnn/tree/master/prepare_data), and tranfer format from VOC to YOLO.
 * **RTTS:** Please follow the [instruction](https://sites.google.com/site/boyilics/website-builder/reside) to prepare dataset.
 * **RainCityscape:** Please follow the [instruction](https://www.photoshopessentials.com/photo-effects/photoshop-weather-effects-rain/) to prepare dataset.
 
@@ -43,7 +43,7 @@ R_YOLO/
 
 ### Step 1: Training the QTNet and Preparing the data of translation image
 
-
+Download the VGG pretrain in [here](https://drive.google.com/file/d/199luoCcfhAF_8kydAwziOIPVqyiLECbN/view?usp=sharing).
 ```shell
 # train the madel of normal_to_advere
 python train_QTNet.py -- mode normal_to_advere
@@ -68,7 +68,7 @@ python train_FCNet.py
 ## Evaluation
 
 ```shell
-
+# or choose your best model 
 python train_FCNet.py -- weight ./runs/weights/best.py
 
 ```
@@ -78,7 +78,7 @@ python train_FCNet.py -- weight ./runs/weights/best.py
 
 YOLOv5:
 
-|  Model   |      data        |  AP   |                                       Model Weights                                        |
-| :-----:  | :-------------:  | :---: | :----------------------------------------------------------------------------------------: |
-| YOLOv5-M |    pretrain      | 27.84 | [link](https://drive.google.com/file/d/1IJQeRP9wHPU0J27YTea-y3lIW96bMAUu/view?usp=sharing) |
-| YOLOv5-M | normal+foggy(un) | 24.16 | [link](https://drive.google.com/file/d/12q-LB4iDvgXGW50Q-bYOahpalUvO3SIa/view?usp=sharing) |
+|  Model   |                  |                                         Model Weights                                        |
+| :-----:  | :-------------:  |  :----------------------------------------------------------------------------------------: |
+| YOLOv5-M |    pretrain      |  [link](https://drive.google.com/file/d/1IJQeRP9wHPU0J27YTea-y3lIW96bMAUu/view?usp=sharing) |
+| YOLOv5-M | normal+foggy(un) |  [link](https://drive.google.com/file/d/12q-LB4iDvgXGW50Q-bYOahpalUvO3SIa/view?usp=sharing) |

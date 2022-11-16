@@ -8,8 +8,7 @@
 
 
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
-# path: /home/smtm/qhd/dataset/datasets/RTTS_yolo
-# path: /home/smtm/qhd/dataset/datasets/VOC2007
+
 path: /home/smtm/qhd/dataset/datasets/Rain
 train: # train images (relative to 'path')  16551 images
   # - images/train_day2007
