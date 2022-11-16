@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div align="center">
 <p>
    <a align="left" href="https://ultralytics.com/yolov5" target="_blank">
@@ -290,3 +291,7 @@ professional support requests please visit [https://ultralytics.com/contact](htt
         <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-instagram.png" width="3%"/>
     </a>
 </div>
+=======
+# code of R-YOLO
+Code and models will be released.
+>>>>>>> b15b7aff2e344b8293662ac80c94edf5f3093dc3
