@@ -335,19 +335,19 @@ def train():
 if __name__ == '__main__':
     args = get_args()
     if args.mode == "normal_to_advere":
-        args.input_dir = './dataset/Normal_to_Foggy/images/Normal_train'  # normal image 2975
-        args.gt_dir = './dataset/Normal_to_Foggy/images/Fogggy_train' # adverse image 2975
+        # args.input_dir = './dataset/Normal_to_Foggy/images/Normal_train/'  # normal image 2975
+        # args.gt_dir = './dataset/Normal_to_Foggy/images/Foggy_train/' # adverse image 2975
         args.save_weight = './runs/QTNet_weights/normal_to_foggy/'
     elif  args.mode == "advere_to_normal":
-        args.input_dir = './dataset/Normal_to_Foggy/images/Fogggy_train'  # 
-        args.gt_dir = './dataset/Normal_to_Foggy/images/Normal_train' # 
+        # args.input_dir = './dataset/Normal_to_Foggy/images/Foggy_train/'  # 
+        # args.gt_dir = './dataset/Normal_to_Foggy/images/Normal_train/' # 
         args.save_weight = './runs/QTNet_weights/foggy_to_normal/'
     args.demo_img = './demo/output_foggy_drop_res/'
     path_to_save = os.path.join(args.save_weight)
     os.makedirs(path_to_save, exist_ok=True)
 
 
-    model_weights = './vgg16_caffe.pth'
+    model_weights = './runs/vgg16_caffe.pth'
     previous_epoch = 0
     epoch = 50 
     learning_rate = 0.0002

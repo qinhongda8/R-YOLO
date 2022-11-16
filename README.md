@@ -2,7 +2,7 @@
 
 Here, we provide detailed instructions to help replay our experiments. To make it easy to reproduce our research results.
 
-This project is the complete code of R-YOLOv5, other YOLO series  We give an overview of the environment installation and adaptation experiment.
+This project is the complete code of R-YOLOv5, other YOLO series as the same mothod, we give an overview of the environment installation and adaptation experiment.
 
 ## Environment installation
 
@@ -43,25 +43,29 @@ R_YOLO/
 
 ### Step 1: Training the QTNet and Preparing the data of translation image
 
-Download the VGG pretrain in [here](https://drive.google.com/file/d/199luoCcfhAF_8kydAwziOIPVqyiLECbN/view?usp=sharing).
+Download the VGG pretrain model in [here](https://drive.google.com/file/d/199luoCcfhAF_8kydAwziOIPVqyiLECbN/view?usp=sharing).
 ```shell
 # train the madel of normal_to_advere
-python train_QTNet.py -- mode normal_to_advere
+python QTNet_train.py --mode normal_to_advere 
 # train the madel of normal_to_advere
-python train_QTNet.py -- mode advere_to_normal
-# generate translation image of normal
-python infer_QTNet.py -- mode normal_to_advere
-# generate translation image of advere
-python infer_QTNet.py -- mode advere_to_normal
+python QTNet_train.py --mode advere_to_normal
+# generate the translation image of normal
+python QTNet_infer.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/ \
+                      --weight ./runs/QTNet_weights/normal_to_foggy/_49.pth
+# generate the translation image of advere
+python QTNet_infer.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Foggy/images/Foggy_train/ \
+                      --weight ./runs/QTNet_weights/foggy_to_normal/_49.pth
+# move the translation image
+mv ./dataset/Normal_to_Foggy/images/Foggy_feak/* ./dataset/Normal_to_Foggy/images/Foggy_train/
+mv ./dataset/Normal_to_Foggy/images/Normal_feak/* ./dataset/Normal_to_Foggy/images/Normal_train/
 ```
-
 
 ### Step 2: Training the FCNet
 
 
 ```shell
 
-python train_FCNet.py
+python train_FCNet.py --data VOC.yaml --cfg yolov5m.yaml --weights ./yolov5m.pt --batch-size 16
 
 ```
 
@@ -69,7 +73,7 @@ python train_FCNet.py
 
 ```shell
 # or choose your best model 
-python train_FCNet.py -- weight ./runs/weights/best.py
+python val.py -- weight ./runs/weights/best.py
 
 ```
 
@@ -80,5 +84,5 @@ YOLOv5:
 
 |  Model   |                  |                                         Model Weights                                        |
 | :-----:  | :-------------:  |  :----------------------------------------------------------------------------------------: |
-| YOLOv5-M |    pretrain      |  [link](https://drive.google.com/file/d/1IJQeRP9wHPU0J27YTea-y3lIW96bMAUu/view?usp=sharing) |
-| YOLOv5-M | normal+foggy(un) |  [link](https://drive.google.com/file/d/12q-LB4iDvgXGW50Q-bYOahpalUvO3SIa/view?usp=sharing) |
+| YOLOv5-M |    pretrain      |  [link](https://drive.google.com/file/d/1mgOF5k6SZHiHsrQWSzDZ6-KmPplDI2hA/view?usp=sharing) |
+| YOLOv5-M | normal+foggy(un) |  [link](https://drive.google.com/file/d/15Ocoz0Xm0K5PctU4wRNheKZYmGWFxN_C/view?usp=sharing) |
