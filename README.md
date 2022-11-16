@@ -2,7 +2,7 @@
 
 Here, we provide detailed instructions to help replay our experiments. To make it easy to reproduce our research results.
 
-This project is the complete code of R-YOLOv5, other YOLO series as the same mothod, we give an overview of the environment installation and adaptation experiment.
+This project is the complete code of R-YOLOv5, other YOLO series can be implemented in the same method, we give an overview of the environment installation and adaptation experiment.
 
 ## Environment installation
 
@@ -26,7 +26,7 @@ pip install -r requirements.txt
 2. Organize the dataset as following:
 
 ```shell
-# the dateset format follow YOLO data format.(eg. normal to foggy)
+# the dateset format follow YOLO data format.(eg. Cityscapes to Foggy-Cityscapes)
 R_YOLO/
 └── datasets/
     └── Normal_to_Foggy/
@@ -59,6 +59,7 @@ python QTNet_infer.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Fo
 mv ./dataset/Normal_to_Foggy/images/Foggy_feak/* ./dataset/Normal_to_Foggy/images/Foggy_train/
 mv ./dataset/Normal_to_Foggy/images/Normal_feak/* ./dataset/Normal_to_Foggy/images/Normal_train/
 ```
+After move the translation image, copy the label of origin image as the label of translation image.
 
 ### Step 2: Training the FCNet
 
@@ -82,7 +83,7 @@ python val.py -- weight ./runs/weights/best.py
 
 YOLOv5:
 
-|  Model   |                  |                                         Model Weights                                        |
-| :-----:  | :-------------:  |  :----------------------------------------------------------------------------------------: |
-| YOLOv5-M |    pretrain      |  [link](https://drive.google.com/file/d/1mgOF5k6SZHiHsrQWSzDZ6-KmPplDI2hA/view?usp=sharing) |
-| YOLOv5-M | normal+foggy(un) |  [link](https://drive.google.com/file/d/15Ocoz0Xm0K5PctU4wRNheKZYmGWFxN_C/view?usp=sharing) |
+|  Model   |                       |                                         Model Weights                                       |
+| :-----:  | :------------------:  |  :----------------------------------------------------------------------------------------: |
+| YOLOv5-M |       pretrain        |  [link](https://drive.google.com/file/d/1mgOF5k6SZHiHsrQWSzDZ6-KmPplDI2hA/view?usp=sharing) |
+| YOLOv5-M | normal+foggy(unlabel) |  [link](https://drive.google.com/file/d/15Ocoz0Xm0K5PctU4wRNheKZYmGWFxN_C/view?usp=sharing) |

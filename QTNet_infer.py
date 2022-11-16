@@ -194,6 +194,7 @@ def get_args():
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--gt_dir", type=str)
     parser.add_argument("--weight",type=str)
+    parser.add_argument("--Normal_feak",type=str)
     args = parser.parse_args()
     return args
 
@@ -243,9 +244,11 @@ if __name__ == '__main__':
     if args.mode == "normal_to_advere":
         # args.input_dir = './dataset/Normal_to_Foggy/images/Normal_train/'  # normal image 2975
         args.output_dir ='./dataset/Normal_to_Foggy/images/Normal_feak/'
+        args.name_list = './Normal_feak.txt'
     elif  args.mode == "advere_to_normal":
         # args.input_dir = './dataset/Normal_to_Foggy/images/Foggy_train/'  # 
         args.output_dir ='./dataset/Normal_to_Foggy/images/Foggy_feak/'
+        args.name_list = './Foggy_feak.txt'
     path_to_output_dir = os.path.join(args.output_dir)
     path_weight = os.path.join(args.weight)
     os.makedirs(path_to_output_dir, exist_ok=True)
@@ -256,7 +259,7 @@ if __name__ == '__main__':
 
     input_list = sorted(os.listdir(args.input_dir))
     num = len(input_list)
-    with open ('./raindataset_clean_2_rain.txt', 'a') as tx:
+    with open (args.name_list, 'a') as tx:
         for i in range(num):
             print('Processing image: %s' % (input_list[i]))
             img = cv2.imread(args.input_dir + input_list[i])

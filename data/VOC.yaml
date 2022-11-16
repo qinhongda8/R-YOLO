@@ -13,13 +13,13 @@ path: /home/smtm/qhd/dataset/datasets/VOC2007
 train: # train images (relative to 'path')  16551 images
   # - images/train_day2007
   # - images/train_foggy2007
-  # - images/train_source_cycle2007
+  - images/train_source_cycle2007
   # - images/day_cycle2007
-  - images/train_day2007
+  # - images/train_day2007
 train_t: # train images (relative to 'path')  16551 images
   # - images/train_foggy2007
-  # - images/train_target_cycle2007
-  - images/train_foggy2007
+  - images/train_target_cycle2007
+  # - images/train_foggy2007
 val: # val images (relative to 'path')  4952 images
   - images/val_night2007
 test: # test images (optional)

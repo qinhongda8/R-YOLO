@@ -29,6 +29,7 @@ data/video1/*
 
 storage.googleapis.com
 runs/*
+datasets/*
 # data/*
 !data/hyps/*
 !data/images/zidane.jpg
