@@ -122,9 +122,6 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
         csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
         model.load_state_dict(csd, strict=False)  # load
-        """ teacher"""
-        teacher_model = Model(cfg or ckpt['model'].yaml, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
-        teacher_model.load_state_dict(csd, strict=False)  # load
         LOGGER.info(f'Transferred {len(csd)}/{len(model.state_dict())} items from {weights}')  # report
     else:
         model = Model(cfg, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
@@ -152,16 +149,6 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
             g0.append(v.weight)
         elif hasattr(v, 'weight') and isinstance(v.weight, nn.Parameter):  # weight (with decay)
             g1.append(v.weight)
-
-    # 教师模型
-    for v in teacher_model.modules():
-        if hasattr(v, 'bias') and isinstance(v.bias, nn.Parameter):  # bias
-            t_g2.append(v.bias)
-        if isinstance(v, nn.BatchNorm2d):  # weight (no decay)
-            t_g0.append(v.weight)
-        elif hasattr(v, 'weight') and isinstance(v.weight, nn.Parameter):  # weight (with decay)
-            t_g1.append(v.weight)
-
 
     if opt.adam:
         optimizer = Adam(g0, lr=hyp['lr0'], betas=(hyp['momentum'], 0.999))  # adjust beta1 to momentum
@@ -272,11 +259,6 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
     model.class_weights = labels_to_class_weights(dataset.labels, nc).to(device) * nc  # attach class weights
     model.names = names
 
-    teacher_model.nc = nc  # attach number of classes to model
-    teacher_model.hyp = hyp  # attach hyperparameters to model
-    teacher_model.class_weights = labels_to_class_weights(dataset.labels, nc).to(device) * nc  # attach class weights
-    teacher_model.names = names
-
     # Start training
     t0 = time.time()
     nw = max(round(hyp['warmup_epochs'] * nb), 1000)  # number of warmup iterations, max(3 epochs, 1k iterations)
@@ -288,33 +270,12 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
     scaler = amp.GradScaler(enabled=cuda)
     stopper = EarlyStopping(patience=opt.patience)
     compute_loss = ComputeLoss(model)  # init loss class
-    teacher_compute_loss = ComputeLoss(teacher_model) 
     LOGGER.info(f'Image sizes {imgsz} train, {imgsz} val\n'
                 f'Using {train_loader.num_workers} dataloader workers\n'
                 f"Logging results to {colorstr('bold', save_dir)}\n"
                 f'Starting training for {epochs} epochs...')
     for epoch in range(start_epoch, epochs):  # epoch ------------------------------------------------------------------
         model.train()
-        teacher_model.eval()
-        # 先进行burn—UP部分 ，也就是将源域模型训练好
-
-
-        # -更新教师模型的参数
-        if epoch == 2 :#opt.SEMISUPNET.BURN_UP_STEP:   
-            with torch.no_grad():
-                student_model_dict = model.state_dict()
-                new_teacher_dict = OrderedDict()
-                for key, value in teacher_model.state_dict().items():
-                    if key in student_model_dict.keys():
-                        new_teacher_dict[key] = (
-                            student_model_dict[key] *
-                            (1 - 0.0) + value * 0.0
-                        )
-                    else:
-                        raise Exception("{} is not found in student model".format(key))
-
-                teacher_model.load_state_dict(new_teacher_dict)
-
         # Update image weights (optional, single-GPU only)
         if opt.image_weights:
             cw = model.class_weights.cpu().numpy() * (1 - maps) ** 2 / nc  # class weights
@@ -361,24 +322,23 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
 
             # Forward
             with amp.autocast(enabled=cuda):
-                # 开始前向传播部分
                 pred, domain= model(imgs)  # forward
                 d_pixel_s = domain[3]
                 pred_t, domain0 = model(imgs_t)
-                # d_pixel_t = domain0[3]
+                d_pixel_t = domain0[3]
                 da_img_loss1 = loss_eval( domain[0], pred[0], is_source_mark = True)
                 da_img_loss2 = loss_eval( domain[1], pred[0], is_source_mark = True)
                 da_img_loss3 = loss_eval( domain[2], pred[0], is_source_mark = True)
-                # dloss_p_s = 0.5 * torch.mean(d_pixel_s ** 2)
+                dloss_p_s = 0.5 * torch.mean(d_pixel_s ** 2)
                 da_img_loss10 = loss_eval( domain0[0], pred_t[0], is_source_mark = False)
                 da_img_loss20 = loss_eval( domain0[1], pred_t[0], is_source_mark = False)
                 da_img_loss30 = loss_eval( domain0[2], pred_t[0], is_source_mark = False)
-                # dloss_p_t = 0.5 * torch.mean((1 - d_pixel_t) ** 2)
+                dloss_p_t = 0.5 * torch.mean((1 - d_pixel_t) ** 2)
                 loss, loss_items = compute_loss(pred, targets.to(device))  # loss scaled by batch_size
-                # # loss = loss + (da_img_loss1 + da_img_loss2 + da_img_loss3 + da_img_loss10 +\
-                # #      da_img_loss20 + da_img_loss30)*0.1 + dloss_p_s + dloss_p_t
                 loss = loss + (da_img_loss1 + da_img_loss2 + da_img_loss3 + da_img_loss10 +\
-                     da_img_loss20 + da_img_loss30)*0.1
+                     da_img_loss20 + da_img_loss30)*0.1 + dloss_p_s + dloss_p_t
+                # loss = loss + (da_img_loss1 + da_img_loss2 + da_img_loss3 + da_img_loss10 +\
+                #      da_img_loss20 + da_img_loss30)*0.1
                 if RANK != -1:
                     loss *= WORLD_SIZE  # gradient averaged between devices in DDP mode
                 if opt.quad:

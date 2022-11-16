@@ -15,40 +15,49 @@ conda activate R_YOLO
 pip install -r requirements.txt
 ```
 
-## Dataset download
+## Dataset download and transfer format 
 
-1. Download Cityscapes dataset and Foggy-Cityscapes dataset   [Cityscape](https://www.cityscapes-dataset.com/)
+1. Dataset download
+
+* **Cityscape and FoggyCityscape:**  Download Cityscapes dataset and Foggy-Cityscapes dataset [Cityscape](https://www.cityscapes-dataset.com/), see dataset preparation code in [DA-Faster RCNN](https://github.com/yuhuayc/da-faster-rcnn/tree/master/prepare_data), than tranfor format from VOC to YOLO.
+* **RTTS:** Please follow the [instruction](https://sites.google.com/site/boyilics/website-builder/reside) to prepare dataset.
+* **RainCityscape:** Please follow the [instruction](https://www.photoshopessentials.com/photo-effects/photoshop-weather-effects-rain/) to prepare dataset.
 
 2. Organize the dataset as following:
 
 ```shell
+# the dateset format follow YOLO data format.(eg. normal to foggy)
 R_YOLO/
 └── datasets/
     └── Normal_to_Foggy/
         └── images/
-            ├── Normal_and_Normaltrans
-            └── Foggy_and_Foggytrans
+            ├── Normal_train
+            ├── Foggy_train
+            └── Foggy_test
         └── labels/
-            └── Normal_and_Normaltrans
+            ├── Normal_val
+            └── Foggy_val
 ```
 
 ## Training
 
-1. QTNet 
+### Step 1: Training the QTNet and Preparing the data of translation image
 
-- Prepare the data of translation image
 
 ```shell
 # train the madel of normal_to_advere
-python train_QTNet.py -- made normal_to_advere
+python train_QTNet.py -- mode normal_to_advere
 # train the madel of normal_to_advere
-python train_QTNet.py -- made advere_to_normal
+python train_QTNet.py -- mode advere_to_normal
 # generate translation image of normal
-python infer_QTNet.py -- made normal_to_advere
+python infer_QTNet.py -- mode normal_to_advere
 # generate translation image of advere
-python infer_QTNet.py -- made advere_to_normal
+python infer_QTNet.py -- mode advere_to_normal
 ```
-2. R-YOLO
+
+
+### Step 2: Training the FCNet
+
 
 ```shell
 
