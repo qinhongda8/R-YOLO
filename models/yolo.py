@@ -10,6 +10,8 @@ import argparse
 import sys
 from copy import deepcopy
 from pathlib import Path
+from torch.autograd import Variable,Function
+import torch.nn.functional as F
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[1]  # YOLOv5 root directory
@@ -80,6 +82,87 @@ class Detect(nn.Module):
             .view((1, self.na, 1, 1, 2)).expand((1, self.na, ny, nx, 2)).float()
         return grid, anchor_grid
 
+class GradReverse(Function):
+
+    # 重写父类方法的时候，最好添加默认参数，不然会有warning（为了好看。。）
+    @ staticmethod
+    def forward(ctx, x, lambd, **kwargs: None):
+        #　其实就是传入dict{'lambd' = lambd} 
+        ctx.lambd = lambd
+        return x.view_as(x)
+
+    @staticmethod
+    def backward(ctx, *grad_output):
+        # 传入的是tuple，我们只需要第一个
+        return grad_output[0] * -ctx.lambd, None
+
+    # 这样写是没有warning，看起来很舒服，但是显然是多此一举咯，所以也可以改写成
+
+    def backward(ctx, grad_output):
+        # 直接传入一格数
+        return grad_output * -ctx.lambd, None
+
+class DAImgHead(nn.Module):
+    """
+    Adds a simple Image-level Domain Classifier head
+    """
+
+    def __init__(self, in_channels):
+        """
+        Arguments:
+            in_channels (int): number of channels of the input feature
+            USE_FPN (boolean): whether FPN feature extractor is used
+        """
+        super(DAImgHead, self).__init__()
+        
+        self.conv1_da = nn.Conv2d(in_channels, 512, kernel_size=1, stride=1)
+        self.conv2_da = nn.Conv2d(512, 1, kernel_size=1, stride=1)
+
+        for l in [self.conv1_da, self.conv2_da]:
+            torch.nn.init.normal_(l.weight, std=0.001)
+            torch.nn.init.constant_(l.bias, 0)
+
+    def forward(self, x):
+        
+        t = F.relu(self.conv1_da(x))
+        img_feature = self.conv2_da(t)
+        return img_feature
+
+class netD_pixel(nn.Module):
+    def __init__(self,context=False):
+        super(netD_pixel, self).__init__()
+        self.conv1 = nn.Conv2d(192, 256, kernel_size=1, stride=1,
+                  padding=0, bias=False)
+        self.conv2 = nn.Conv2d(256, 128, kernel_size=1, stride=1,
+                               padding=0, bias=False)
+        self.conv3 = nn.Conv2d(128, 1, kernel_size=1, stride=1,
+                               padding=0, bias=False)
+        self.context = context
+        self._init_weights()
+    def _init_weights(self):
+      def normal_init(m, mean, stddev, truncated=False):
+        """
+        weight initalizer: truncated normal and random normal.
+        """
+        # x is a parameter
+        if truncated:
+          m.weight.data.normal_().fmod_(2).mul_(stddev).add_(mean)  # not a perfect approximation
+        else:
+          m.weight.data.normal_(mean, stddev)
+          #m.bias.data.zero_()
+      normal_init(self.conv1, 0, 0.01)
+      normal_init(self.conv2, 0, 0.01)
+      normal_init(self.conv3, 0, 0.01)
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
+        if self.context:
+          feat = F.avg_pool2d(x, (x.size(2), x.size(3)))
+          x = self.conv3(x)
+          return torch.sigmoid(x),feat
+        else:
+          x = self.conv3(x)
+          return torch.sigmoid(x)
 
 class Model(nn.Module):
     def __init__(self, cfg='yolov5s.yaml', ch=3, nc=None, anchors=None):  # model, input channels, number of classes
@@ -103,13 +186,19 @@ class Model(nn.Module):
         self.model, self.save = parse_model(deepcopy(self.yaml), ch=[ch])  # model, savelist
         self.names = [str(i) for i in range(self.yaml['nc'])]  # default names
         self.inplace = self.yaml.get('inplace', True)
+        # device = torch.device("cuda:0")
+        self.netD1 = DAImgHead(192)
+        self.netD2 = DAImgHead(384)
+        self.netD3 = DAImgHead(768)
+        self.netD_pixel = netD_pixel()
 
         # Build strides, anchors
         m = self.model[-1]  # Detect()
         if isinstance(m, Detect):
             s = 256  # 2x min stride
             m.inplace = self.inplace
-            m.stride = torch.tensor([s / x.shape[-2] for x in self.forward(torch.zeros(1, ch, s, s))])  # forward
+            m.stride = torch.tensor([s / x.shape[-2] for x in (self.forward(torch.zeros(1, ch, s, s)))[0]])  # forward
+            # m.stride = torch.tensor([s / x.shape[-2] for x in (self.forward(torch.zeros(1, ch, s, s)))])  # forward
             m.anchors /= m.stride.view(-1, 1, 1)
             check_anchor_order(m)
             self.stride = m.stride
@@ -141,6 +230,7 @@ class Model(nn.Module):
 
     def _forward_once(self, x, profile=False, visualize=False):
         y, dt = [], []  # outputs
+        domain = [] # 输出域适应对应的特征图判别之后的特征信息
         for m in self.model:
             if m.f != -1:  # if not from previous layer
                 x = y[m.f] if isinstance(m.f, int) else [x if j == -1 else y[j] for j in m.f]  # from earlier layers
@@ -148,9 +238,22 @@ class Model(nn.Module):
                 self._profile_one_layer(m, x, dt)
             x = m(x)  # run
             y.append(x if m.i in self.save else None)  # save output
+            # 域适应
+            if True:
+                if m.i == 4:
+                    domain_1 = self.netD1(GradReverse.apply(x, 1.0))
+                    d_pixel = self.netD_pixel(GradReverse.apply(x, 1.0))
+                if m.i == 6:
+                    domain_2 = self.netD2(GradReverse.apply(x, 1.0))
+                if m.i == 9:
+                    domain_3 = self.netD3(GradReverse.apply(x, 1.0))
+
+            
+
             if visualize:
                 feature_visualization(x, m.type, m.i, save_dir=visualize)
-        return x
+        domain = [domain_1,domain_2,domain_3,d_pixel]
+        return x,domain
 
     def _descale_pred(self, p, flips, scale, img_size):
         # de-scale predictions following augmented inference (inverse operation)

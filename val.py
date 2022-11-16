@@ -172,6 +172,8 @@ def run(data,
 
         # Run model
         out, train_out = model(img, augment=augment)  # inference and training outputs
+        train_out = out[1]
+        out = out[0]
         dt[1] += time_sync() - t2
 
         # Compute loss
@@ -299,9 +301,9 @@ def run(data,
 
 def parse_opt():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data', type=str, default=ROOT / 'data/coco128.yaml', help='dataset.yaml path')
-    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'yolov5s.pt', help='model.pt path(s)')
-    parser.add_argument('--batch-size', type=int, default=32, help='batch size')
+    parser.add_argument('--data', type=str, default=ROOT / 'data/VOC.yaml', help='dataset.yaml path')
+    parser.add_argument('--weights', nargs='+', type=str, default='/home/smtm/qhd/code/code_git/yolov5-6.0_R-yolov3/runs/train/exp80_source_only/weights/best.pt', help='model.pt path(s)')
+    parser.add_argument('--batch-size', type=int, default=16, help='batch size')
     parser.add_argument('--imgsz', '--img', '--img-size', type=int, default=640, help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float, default=0.001, help='confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.6, help='NMS IoU threshold')

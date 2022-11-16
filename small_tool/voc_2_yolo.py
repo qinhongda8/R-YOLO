@@ -8,6 +8,10 @@ from utils.general import download, Path
 names =  [ '__background__', # always index 0
                          'bus', 'bicycle', 'car', 'motorcycle', 'person', 'rider', 'train', 'truck']
 
+
+# names =  [ '__background__', # always index 0
+#                          'bus', 'bicycle', 'car', 'motorbike', 'person', 'rider', 'train', 'truck']
+
 def convert_label(path, lb_path, year, image_id):
     def convert_box(size, box):
         dw, dh = 1. / size[0], 1. / size[1]
@@ -40,10 +44,11 @@ def convert_label(path, lb_path, year, image_id):
 # download(urls, dir=dir / 'images', delete=False)
 
 # Convert
-path = '/home/smtm/qhd/dataset/dataset/'
+path = '/home/smtm/qhd/dataset/datasets/Rain'
 dir = Path(path)  # dataset root dir
 path =Path(path)
-for year, image_set in  ('2007', 'train_day'), ('2007', 'val_night'):
+# for year, image_set in  ('2007', 'train_day'), ('2007', 'val_night'):
+for year, image_set in  ('2007', 'val'), ('2007', 'val'):
     imgs_path = dir / 'images' / f'{image_set}{year}'
     lbs_path = dir / 'labels' / f'{image_set}{year}'
     imgs_path.mkdir(exist_ok=True, parents=True)

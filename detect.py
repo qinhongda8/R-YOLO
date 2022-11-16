@@ -149,8 +149,9 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
         if pt:
             visualize = increment_path(save_dir / Path(path).stem, mkdir=True) if visualize else False
             pred = model(img, augment=augment, visualize=visualize)[0]
+            pred = pred[0]
         elif onnx:
-            if dnn:
+            if dnn: 
                 net.setInput(img)
                 pred = torch.tensor(net.forward())
             else:
@@ -266,15 +267,15 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
 
 def parse_opt():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'yolov5s.pt', help='model path(s)')
-    parser.add_argument('--source', type=str, default=ROOT / 'data/images', help='file/dir/URL/glob, 0 for webcam')
+    parser.add_argument('--weights', nargs='+', type=str, default='/home/smtm/qhd/code/code_git/yolov5-6.0_R-yolov3/runs/train/exp198-RTTS_CYCLE/weights/best.pt', help='model path(s)')
+    parser.add_argument('--source', type=str, default=ROOT / 'data/video1', help='file/dir/URL/glob, 0 for webcam')
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
-    parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
+    parser.add_argument('--conf-thres', type=float, default=0.5, help='confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='NMS IoU threshold')
     parser.add_argument('--max-det', type=int, default=1000, help='maximum detections per image')
     parser.add_argument('--device', default='', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     parser.add_argument('--view-img', action='store_true', help='show results')
-    parser.add_argument('--save-txt', action='store_true', help='save results to *.txt')
+    parser.add_argument('--save-txt', default=True, help='save results to *.txt')
     parser.add_argument('--save-conf', action='store_true', help='save confidences in --save-txt labels')
     parser.add_argument('--save-crop', action='store_true', help='save cropped prediction boxes')
     parser.add_argument('--nosave', action='store_true', help='do not save images/videos')
@@ -305,3 +306,8 @@ def main(opt):
 if __name__ == "__main__":
     opt = parse_opt()
     main(opt)
+
+# cv2.rectangle(self.im, (int(box[0]), int(abs(box[1])-15)), (int(box[0]+box_w*0.55), int(box[1])), color, -1)  # filled
+                  
+#                 cv2.putText(self.im, label,  (int(box[0]), int(box[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5,  (0,0,0),
+#                             thickness=2)
