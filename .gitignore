@@ -32,8 +32,7 @@ runs/*
 datasets/*
 # data/*
 !data/hyps/*
-!data/images/zidane.jpg
-!data/images/bus.jpg
+!data/images/network.jpg
 !data/*.sh
 
 results*.csv

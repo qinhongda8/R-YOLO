@@ -4,6 +4,7 @@ Here, we provide detailed instructions to help replay our experiments. To make i
 
 This project is the complete code of R-YOLOv5, other YOLO series can be implemented in the same method, we give an overview of the environment installation and adaptation experiment.
 
+![Framework](./data/images/network.jpg)
 ## Environment installation
 
 ```shell
@@ -15,11 +16,11 @@ conda activate R_YOLO
 pip install -r requirements.txt
 ```
 
-## Dataset download and transfer format 
+## Dataset download and convert dataset format 
 
 1. Dataset download
 
-* **Cityscape and FoggyCityscape:**  Download Cityscapes dataset and Foggy-Cityscapes [here](https://www.cityscapes-dataset.com/), see dataset preparation code in [DA-Faster RCNN](https://github.com/yuhuayc/da-faster-rcnn/tree/master/prepare_data), and tranfer format from VOC to YOLO.
+* **Cityscape and FoggyCityscape:**  Download Cityscapes dataset and Foggy-Cityscapes [here](https://www.cityscapes-dataset.com/), see dataset preparation code in [DA-Faster RCNN](https://github.com/yuhuayc/da-faster-rcnn/tree/master/prepare_data), and convert format from PASCAL_VOC to YOLO.
 * **RTTS:** Please follow the [instruction](https://sites.google.com/site/boyilics/website-builder/reside) to prepare dataset.
 * **RainCityscape:** Please follow the [instruction](https://www.photoshopessentials.com/photo-effects/photoshop-weather-effects-rain/) to prepare dataset.
 
@@ -46,9 +47,11 @@ R_YOLO/
 Download the VGG pretrain model in [here](https://drive.google.com/file/d/199luoCcfhAF_8kydAwziOIPVqyiLECbN/view?usp=sharing).
 ```shell
 # train the madel of normal_to_advere
-python QTNet_train.py --mode normal_to_advere 
+python QTNet_train.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/
+                      --gt_dir ./dataset/Normal_to_Foggy/images/Foggy_train/
 # train the madel of normal_to_advere
-python QTNet_train.py --mode advere_to_normal
+python QTNet_train.py --mode advere_to_normal --input_dir ./dataset/Normal_to_Foggy/images/Foggy_train/ \
+                      --gt_dir ./dataset/Normal_to_Foggy/images/Normal_train/
 # generate the translation image of normal
 python QTNet_infer.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/ \
                       --weight ./runs/QTNet_weights/normal_to_foggy/_49.pth
