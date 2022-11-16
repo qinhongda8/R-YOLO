@@ -62,7 +62,7 @@ python QTNet_infer.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Fo
 mv ./dataset/Normal_to_Foggy/images/Foggy_feak/* ./dataset/Normal_to_Foggy/images/Foggy_train/
 mv ./dataset/Normal_to_Foggy/images/Normal_feak/* ./dataset/Normal_to_Foggy/images/Normal_train/
 ```
-After move the translation image, copy the label of origin image as the label of translation image.
+After generating the translation image, copy the label of the origin image as the label of the translation image.
 
 ### Step 2: Training the FCNet
 
