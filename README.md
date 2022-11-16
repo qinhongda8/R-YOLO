@@ -84,8 +84,6 @@ python val.py -- weight ./runs/weights/best.py
 ## Models
 ### Pre-trained Models
 
-YOLOv5:
-
 |  Model   |                       |                                         Model Weights                                       |
 | :-----:  | :------------------:  |  :----------------------------------------------------------------------------------------: |
 | YOLOv5-M |       pretrain        |  [yolov5m.pt](https://drive.google.com/file/d/1mgOF5k6SZHiHsrQWSzDZ6-KmPplDI2hA/view?usp=sharing) |
