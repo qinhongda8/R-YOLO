@@ -49,7 +49,7 @@ Download the VGG pretrain model in [here](https://drive.google.com/file/d/199luo
 # train the model of normal_to_adverse
 python QTNet_train.py --mode normal_to_adverse --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/
                       --gt_dir ./dataset/Normal_to_Foggy/images/Foggy_train/
-# train the model of normal_to_adverse
+# train the model of adverse_to_normal
 python QTNet_train.py --mode adverse_to_normal --input_dir ./dataset/Normal_to_Foggy/images/Foggy_train/ \
                       --gt_dir ./dataset/Normal_to_Foggy/images/Normal_train/
 # generate the normal translation image 
