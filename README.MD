@@ -26,7 +26,7 @@ R_YOLO/
 └── datasets/
     └── Normal_to_Foggy/
         └── images/
-         	├── Normal_and_Normaltrans
+            ├── Normal_and_Normaltrans
             └── Foggy_and_Foggytrans
         └── labels/
             └── Normal_and_Normaltrans
@@ -72,5 +72,4 @@ YOLOv5:
 |  Model   |      data        |  AP   |                                       Model Weights                                        |
 | :-----:  | :-------------:  | :---: | :----------------------------------------------------------------------------------------: |
 | YOLOv5-M |    pretrain      | 27.84 | [link](https://drive.google.com/file/d/1IJQeRP9wHPU0J27YTea-y3lIW96bMAUu/view?usp=sharing) |
-| YOLOv5-M |     normal       | 20.16 | [link](https://drive.google.com/file/d/1NQs5SrQ2-ODEVn_ZdPU_2xv9mxdY6MPq/view?usp=sharing) |
 | YOLOv5-M | normal+foggy(un) | 24.16 | [link](https://drive.google.com/file/d/12q-LB4iDvgXGW50Q-bYOahpalUvO3SIa/view?usp=sharing) |
