@@ -27,7 +27,7 @@ pip install -r requirements.txt
 2. Organize the dataset as following:
 
 ```shell
-# the dateset format follow YOLO data format.(e.g., Cityscapes to Foggy-Cityscapes)
+# the dataset format follow YOLO format.(e.g., Cityscapes to Foggy-Cityscapes)
 R_YOLO/
 └── datasets/
     └── Normal_to_Foggy/
@@ -46,10 +46,10 @@ R_YOLO/
 
 Download the VGG pretrain model in [here](https://drive.google.com/file/d/199luoCcfhAF_8kydAwziOIPVqyiLECbN/view?usp=sharing).
 ```shell
-# train the madel of normal_to_advere
+# train the model of normal_to_advere
 python QTNet_train.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/
                       --gt_dir ./dataset/Normal_to_Foggy/images/Foggy_train/
-# train the madel of normal_to_advere
+# train the model of normal_to_advere
 python QTNet_train.py --mode advere_to_normal --input_dir ./dataset/Normal_to_Foggy/images/Foggy_train/ \
                       --gt_dir ./dataset/Normal_to_Foggy/images/Normal_train/
 # generate the translation image of normal
