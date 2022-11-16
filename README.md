@@ -34,7 +34,7 @@ R_YOLO/
         └── images/
             ├── Normal_train
             ├── Foggy_train
-            └── Foggy_test
+            └── Foggy_val
         └── labels/
             ├── Normal_val
             └── Foggy_val
