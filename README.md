@@ -27,7 +27,7 @@ pip install -r requirements.txt
 2. Organize the dataset as following:
 
 ```shell
-# the dateset format follow YOLO data format.(eg. Cityscapes to Foggy-Cityscapes)
+# the dateset format follow YOLO data format.(e.g., Cityscapes to Foggy-Cityscapes)
 R_YOLO/
 └── datasets/
     └── Normal_to_Foggy/
