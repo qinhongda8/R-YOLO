@@ -52,10 +52,10 @@ python QTNet_train.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Fo
 # train the model of normal_to_advere
 python QTNet_train.py --mode advere_to_normal --input_dir ./dataset/Normal_to_Foggy/images/Foggy_train/ \
                       --gt_dir ./dataset/Normal_to_Foggy/images/Normal_train/
-# generate the translation image of normal
+# generate the normal translation image 
 python QTNet_infer.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/ \
                       --weight ./runs/QTNet_weights/normal_to_foggy/_49.pth
-# generate the translation image of advere
+# generate the advere translation image 
 python QTNet_infer.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Foggy/images/Foggy_train/ \
                       --weight ./runs/QTNet_weights/foggy_to_normal/_49.pth
 # move the translation image
