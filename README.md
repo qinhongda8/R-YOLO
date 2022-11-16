@@ -46,17 +46,17 @@ R_YOLO/
 
 Download the VGG pretrain model in [here](https://drive.google.com/file/d/199luoCcfhAF_8kydAwziOIPVqyiLECbN/view?usp=sharing).
 ```shell
-# train the model of normal_to_advere
-python QTNet_train.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/
+# train the model of normal_to_adverse
+python QTNet_train.py --mode normal_to_adverse --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/
                       --gt_dir ./dataset/Normal_to_Foggy/images/Foggy_train/
-# train the model of normal_to_advere
-python QTNet_train.py --mode advere_to_normal --input_dir ./dataset/Normal_to_Foggy/images/Foggy_train/ \
+# train the model of normal_to_adverse
+python QTNet_train.py --mode adverse_to_normal --input_dir ./dataset/Normal_to_Foggy/images/Foggy_train/ \
                       --gt_dir ./dataset/Normal_to_Foggy/images/Normal_train/
 # generate the normal translation image 
-python QTNet_infer.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/ \
+python QTNet_infer.py --mode normal_to_adverse --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/ \
                       --weight ./runs/QTNet_weights/normal_to_foggy/_49.pth
-# generate the advere translation image 
-python QTNet_infer.py --mode normal_to_advere --input_dir ./dataset/Normal_to_Foggy/images/Foggy_train/ \
+# generate the adverse translation image 
+python QTNet_infer.py --mode normal_to_adverse --input_dir ./dataset/Normal_to_Foggy/images/Foggy_train/ \
                       --weight ./runs/QTNet_weights/foggy_to_normal/_49.pth
 # move the translation image
 mv ./dataset/Normal_to_Foggy/images/Foggy_feak/* ./dataset/Normal_to_Foggy/images/Foggy_train/

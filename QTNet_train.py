@@ -297,7 +297,7 @@ def loss_generator(generator_results, back_ground_truth):
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", default="normal_to_advere", type=str)
+    parser.add_argument("--mode", default="normal_to_adverse", type=str)
     parser.add_argument("--input_dir", type=str)
     parser.add_argument("--output_dir", type=str)
     parser.add_argument("--gt_dir", type=str)
@@ -334,11 +334,11 @@ def train():
 
 if __name__ == '__main__':
     args = get_args()
-    if args.mode == "normal_to_advere":
+    if args.mode == "normal_to_adverse":
         # args.input_dir = './dataset/Normal_to_Foggy/images/Normal_train/'  # normal image 2975
         # args.gt_dir = './dataset/Normal_to_Foggy/images/Foggy_train/' # adverse image 2975
         args.save_weight = './runs/QTNet_weights/normal_to_foggy/'
-    elif  args.mode == "advere_to_normal":
+    elif  args.mode == "adverse_to_normal":
         # args.input_dir = './dataset/Normal_to_Foggy/images/Foggy_train/'  # 
         # args.gt_dir = './dataset/Normal_to_Foggy/images/Normal_train/' # 
         args.save_weight = './runs/QTNet_weights/foggy_to_normal/'

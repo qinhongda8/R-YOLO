@@ -241,11 +241,11 @@ def  predict(image):
 
 if __name__ == '__main__':
     args = get_args()
-    if args.mode == "normal_to_advere":
+    if args.mode == "normal_to_adverse":
         # args.input_dir = './dataset/Normal_to_Foggy/images/Normal_train/'  # normal image 2975
         args.output_dir ='./dataset/Normal_to_Foggy/images/Normal_feak/'
         args.name_list = './Normal_feak.txt'
-    elif  args.mode == "advere_to_normal":
+    elif  args.mode == "adverse_to_normal":
         # args.input_dir = './dataset/Normal_to_Foggy/images/Foggy_train/'  # 
         args.output_dir ='./dataset/Normal_to_Foggy/images/Foggy_feak/'
         args.name_list = './Foggy_feak.txt'
