@@ -19,7 +19,7 @@ pip install -r requirements.txt
 
 1. Dataset download
 
-* **Cityscape and FoggyCityscape:**  Download Cityscapes dataset and Foggy-Cityscapes dataset [Cityscape](https://www.cityscapes-dataset.com/), see dataset preparation code in [DA-Faster RCNN](https://github.com/yuhuayc/da-faster-rcnn/tree/master/prepare_data), than tranfor format from VOC to YOLO.
+* **Cityscape and FoggyCityscape:**  Download Cityscapes dataset and Foggy-Cityscapes [here](https://www.cityscapes-dataset.com/), see dataset preparation code in [DA-Faster RCNN](https://github.com/yuhuayc/da-faster-rcnn/tree/master/prepare_data), than tranfer format from VOC to YOLO.
 * **RTTS:** Please follow the [instruction](https://sites.google.com/site/boyilics/website-builder/reside) to prepare dataset.
 * **RainCityscape:** Please follow the [instruction](https://www.photoshopessentials.com/photo-effects/photoshop-weather-effects-rain/) to prepare dataset.
 

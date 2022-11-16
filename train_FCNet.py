@@ -390,8 +390,6 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
 
             # Update best mAP
             fi = fitness(np.array(results).reshape(1, -1))  # weighted combination of [P, R, mAP@.5, mAP@.5-.95]
-            mAP50 = results[2]
-            fi = mAP50 # 将保存最高精度的标准换为mAP50
             if fi > best_fitness:
                 best_fitness = fi
             log_vals = list(mloss) + list(results) + lr
