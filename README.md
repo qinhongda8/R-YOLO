@@ -85,5 +85,5 @@ YOLOv5:
 
 |  Model   |                       |                                         Model Weights                                       |
 | :-----:  | :------------------:  |  :----------------------------------------------------------------------------------------: |
-| YOLOv5-M |       pretrain        |  [link](https://drive.google.com/file/d/1mgOF5k6SZHiHsrQWSzDZ6-KmPplDI2hA/view?usp=sharing) |
-| YOLOv5-M | normal+foggy(unlabel) |  [link](https://drive.google.com/file/d/15Ocoz0Xm0K5PctU4wRNheKZYmGWFxN_C/view?usp=sharing) |
+| YOLOv5-M |       pretrain        |  [yolov5m.pt](https://drive.google.com/file/d/1mgOF5k6SZHiHsrQWSzDZ6-KmPplDI2hA/view?usp=sharing) |
+| YOLOv5-M | normal+foggy(unlabel) |  [adaptive_best.pt](https://drive.google.com/file/d/15Ocoz0Xm0K5PctU4wRNheKZYmGWFxN_C/view?usp=sharing) |
