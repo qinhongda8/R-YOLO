@@ -84,22 +84,17 @@ class Detect(nn.Module):
 
 class GradReverse(Function):
 
-    # 重写父类方法的时候，最好添加默认参数，不然会有warning（为了好看。。）
     @ staticmethod
     def forward(ctx, x, lambd, **kwargs: None):
-        #　其实就是传入dict{'lambd' = lambd} 
         ctx.lambd = lambd
         return x.view_as(x)
 
     @staticmethod
     def backward(ctx, *grad_output):
-        # 传入的是tuple，我们只需要第一个
         return grad_output[0] * -ctx.lambd, None
 
-    # 这样写是没有warning，看起来很舒服，但是显然是多此一举咯，所以也可以改写成
 
     def backward(ctx, grad_output):
-        # 直接传入一格数
         return grad_output * -ctx.lambd, None
 
 class DAImgHead(nn.Module):
@@ -230,7 +225,7 @@ class Model(nn.Module):
 
     def _forward_once(self, x, profile=False, visualize=False):
         y, dt = [], []  # outputs
-        domain = [] # 输出域适应对应的特征图判别之后的特征信息
+        domain = [] 
         for m in self.model:
             if m.f != -1:  # if not from previous layer
                 x = y[m.f] if isinstance(m.f, int) else [x if j == -1 else y[j] for j in m.f]  # from earlier layers
@@ -238,7 +233,7 @@ class Model(nn.Module):
                 self._profile_one_layer(m, x, dt)
             x = m(x)  # run
             y.append(x if m.i in self.save else None)  # save output
-            # 域适应
+            # domain adaptive
             if True:
                 if m.i == 4:
                     domain_1 = self.netD1(GradReverse.apply(x, 1.0))

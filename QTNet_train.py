@@ -1,8 +1,4 @@
 # -*- coding: UTF-8 -*-
-"""
-Created by louis at 2021/3/25
-Description:
-"""
 # PyTorch lib
 import argparse
 import math
@@ -267,9 +263,7 @@ def resize_image(image, scale_coefficient):
 def loss_generator(generator_results, back_ground_truth):
 
     mseloss = nn.MSELoss()
-    # 计算公式4
 
-    # 计算公式5
     _s = [generator_results[1], generator_results[2], generator_results[4]]
     _t = [prepare_img_to_tensor(resize_image(back_ground_truth, 0.25)),
           prepare_img_to_tensor(resize_image(back_ground_truth, 0.5)), prepare_img_to_tensor(back_ground_truth)]
@@ -279,7 +273,6 @@ def loss_generator(generator_results, back_ground_truth):
         lm_s_t += _lamda[i] * mseloss(_s[i], _t[i])
     lm_s_t = torch.mean(lm_s_t)
 
-    # 计算公式6
     lp_o_t = 0
     # loss2 = nn.MSELoss()
     vgg_to_gen = vgg16(generator_results[4])
@@ -288,7 +281,6 @@ def loss_generator(generator_results, back_ground_truth):
         lp_o_t += mseloss(vgg_to_gen[i], vgg_to_gt[i])
     lp_o_t = torch.mean(lp_o_t)
 
-    # 计算公式7
     # LGAN(O) = log(1 - D(G(I)))
     l_g =  lm_s_t + lp_o_t
     return l_g
