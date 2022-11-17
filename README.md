@@ -69,7 +69,7 @@ After generating the translation image, copy the label of the origin image as th
 
 ```shell
 
-python train_FCNet.py --data VOC.yaml --cfg yolov5m.yaml --weights ./yolov5m.pt --batch-size 16
+python train_FCNet.py --data VOC.yaml --cfg yolov5m.yaml --weights yolov5m.pt --batch-size 16
 
 ```
 
