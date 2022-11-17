@@ -44,7 +44,7 @@ R_YOLO/
 
 ### Step 1: Training the QTNet and Preparing the data of translation image
 
-Download the VGG pretrain model in [here](https://drive.google.com/file/d/199luoCcfhAF_8kydAwziOIPVqyiLECbN/view?usp=sharing).
+Download the VGG pre-trained model in [here](https://drive.google.com/file/d/199luoCcfhAF_8kydAwziOIPVqyiLECbN/view?usp=sharing).
 ```shell
 # train the model of normal_to_adverse
 python QTNet_train.py --mode normal_to_adverse --input_dir ./dataset/Normal_to_Foggy/images/Normal_train/
@@ -86,5 +86,5 @@ python val.py -- weight ./runs/weights/best.py
 
 |  Model   |                       |                                         Model Weights                                       |
 | :-----:  | :------------------:  |  :----------------------------------------------------------------------------------------: |
-| YOLOv5-M |       pretrain        |  [yolov5m.pt](https://drive.google.com/file/d/1mgOF5k6SZHiHsrQWSzDZ6-KmPplDI2hA/view?usp=sharing) |
+| YOLOv5-M |       pre-trained        |  [yolov5m.pt](https://drive.google.com/file/d/1mgOF5k6SZHiHsrQWSzDZ6-KmPplDI2hA/view?usp=sharing) |
 | YOLOv5-M | normal+foggy(unlabel) |  [adaptive_best.pt](https://drive.google.com/file/d/15Ocoz0Xm0K5PctU4wRNheKZYmGWFxN_C/view?usp=sharing) |
