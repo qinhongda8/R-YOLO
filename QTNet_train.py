@@ -13,7 +13,7 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 
 import torchvision
-
+from tqdm import tqdm
 
 # Tools lib
 # import cv2
@@ -186,7 +186,7 @@ class Generator(nn.Module):
         x = x + res1
         x = self.conv10(x)
         x = self.output(x)
-        # x = input + x
+        x = input + x
         return mask_list, frame1, frame2, attention_map, x
 
 def prepare_img_to_tensor(image,mean=(0.406, 0.456, 0.485),std=(0.225,0.224, 0.229)):
@@ -307,22 +307,23 @@ def train():
     for _e in range(previous_epoch + 1, epoch):
         print("======finish  ", _e ,' / ', epoch, "==========")
 
-        for _i in range(len(input_list)):  
-                img = cv2.imread(args.input_dir + input_list[_i])
-                gt = cv2.imread(args.gt_dir + gt_list[_i])
-                dsize = (416, 416)
-                img = cv2.resize(img, dsize)
-                gt = cv2.resize(gt, dsize)
-                img_tensor = prepare_img_to_tensor(img)
-                result = generator(img_tensor, device)
-                loss1 = loss_generator(result, gt)
-                optimizer_g.zero_grad()
-                # Backpropagation
-                loss1.backward()
-                optimizer_g.step()
-                torch.save(generator.state_dict(), os.path.join(args.save_weight, 
-                        '_' + str(_e) + '.pth')
-                        )
+        for _i in tqdm(range(len(input_list))):  
+            img = cv2.imread(args.input_dir + input_list[_i])
+            gt = cv2.imread(args.gt_dir + gt_list[_i])
+            dsize = (416, 416)
+            img = cv2.resize(img, dsize)
+            gt = cv2.resize(gt, dsize)
+            img_tensor = prepare_img_to_tensor(img)
+            result = generator(img_tensor, device)
+            loss1 = loss_generator(result, gt)
+            optimizer_g.zero_grad()
+            # Backpropagation
+            loss1.backward()
+            optimizer_g.step()
+        print("save_in : ", os.path.join(args.save_weight, '_' + str(_e) + '.pth'))
+        torch.save(generator.state_dict(), os.path.join(args.save_weight, 
+                '_' + str(_e) + '.pth')
+                )
 
 if __name__ == '__main__':
     args = get_args()
@@ -351,5 +352,5 @@ if __name__ == '__main__':
     generator = Generator().to(device)
     vgg16 = Vgg(vgg_init(device, model_weights))
     optimizer_g = torch.optim.Adam(generator.parameters(), lr=learning_rate)
-    lamda_in_autoencoder = [0.01, 0.01, 0.01]
+    lamda_in_autoencoder = [0.6, 0.8, 1.0]
     train()
